@@ -1,12 +1,25 @@
 const mongooseTool = require("mongoose");
+const {StockScheme} = require("../data/Stock");
 
-
-module.exports.connectDB = () =>{
-    mongooseTool.connect("mongodb://localhost:27017/izhar-mashkif-mongo-poc")
+const connectDB = () =>{
+    mongooseTool.connect("mongodb://lingar:12345678@localhost:27017/izhar-mashkif-mongo-poc?authSource=admin")//mongodb://lingar:12345678@localhost:27017 - without password: mongodb://localhost:27017
         .then(()=> console.log("db connected by mongoose"))
-        .catch(()=> console.log("Error in mongoose connection"));
+        .catch((e)=> console.log("Error in mongoose connection", e));
 
     
+}
+
+module.exports.init = () =>{
+    connectDB();
+
+    //creating scheme = shape of the collection to create
+    const stocksSchema = new mongooseTool.Schema(StockScheme);
+    //creating the collection
+    const StockModel = mongooseTool.model('stocks', stocksSchema);
+
+
+
+
 }
 
 module.exports.playGamesMongoose = async (req, res) => {
