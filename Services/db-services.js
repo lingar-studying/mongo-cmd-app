@@ -1,42 +1,85 @@
 const mongooseTool = require("mongoose");
 const {StockScheme} = require("../data/Stock");
 //https://mongoosejs.com/
-const connectDB = () =>{
-    mongooseTool.connect("mongodb://lingar:12345678@localhost:27017/izhar-mashkif-mongo-poc?authSource=admin")//mongodb://lingar:12345678@localhost:27017 - without password: mongodb://localhost:27017
-        .then(()=> console.log("db connected by mongoose"))
-        .catch((e)=> console.log("Error in mongoose connection", e));
+//https://www.nasdaq.com/market-activity/stocks
 
-    
+let stocksSchema = null;//new mongooseTool.Schema(StockScheme);
+//creating the collection
+let stockModel = null;
+const connectDB = () => {
+    mongooseTool.connect("mongodb://lingar:12345678@localhost:27017/izhar-mashkif-mongo-poc?authSource=admin")//mongodb://lingar:12345678@localhost:27017 - without password: mongodb://localhost:27017
+        .then(() => console.log("db connected by mongoose"))
+        .catch((e) => console.log("Error in mongoose connection", e));
+
+
 }
 
-module.exports.init = async () =>{
+module.exports.init = async () => {
     connectDB();
 
     //creating scheme = shape of the collection to create
-    const stocksSchema = new mongooseTool.Schema(StockScheme);
+    stocksSchema = new mongooseTool.Schema(StockScheme);
     //creating the collection
-    const StockModel = mongooseTool.model('stocks', stocksSchema);
-
-    const coke = new StockModel({
-        name: "Coca-Cola Consolidated",
-        symbol: "ko".toUpperCase(),
-        industry: "food",
-        price: 61.59,
-        isActive: false,
-    });
-
-    await coke.save();
-
-
+    stockModel = mongooseTool.model('stocks', stocksSchema);
+    await createInitMocks();
 
 
 }
 
+
+const createInitMocks = async () => {
+
+    let exist = await stockModel.exists({symbol: "KO"}) != null;
+    if (!exist) {
+        const coke = new stockModel({
+            name: "Coca-Cola Consolidated",
+            symbol: "ko".toUpperCase(),
+            industry: "food",
+            price: 61.59,
+            isActive: false,
+        });
+
+        await coke.save();
+
+    }
+
+
+    exist = await stockModel.exists({symbol: "BAER"}) != null;
+
+    if (!exist) {
+
+        const baer = new stockModel({
+            name: "Bridger Aerospace Group Holdings",
+            symbol: "baer".toUpperCase(),
+            industry: "Business Services",
+            price: 2.79,
+            isActive: true,
+        });
+
+        await baer.save();
+
+    }
+
+    exist = await stockModel.exists({symbol: "PSMT"}) != null;
+
+    if (!exist) {
+
+        const psmt = new stockModel({
+            name: "PriceSmart",
+            symbol: "psmt".toUpperCase(),
+            industry: "Department/Specialty Retail Stores",
+            price: 93.45,
+            isActive: false,
+        });
+
+        await psmt.save();
+
+    }
+
+}
 module.exports.playGamesMongoose = async (req, res) => {
 
     console.log("hello Mongoose");
-
-
 
 
     // const userSchema = new mongoose.Schema({
