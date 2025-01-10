@@ -6,6 +6,8 @@ const {StockScheme} = require("../data/Stock");
 let stocksSchema = null;//new mongooseTool.Schema(StockScheme);
 //creating the collection
 let stockModel = null;
+
+let stocksUpdatedData = [];
 const connectDB = () => {
     mongooseTool.connect("mongodb://lingar:12345678@localhost:27017/izhar-mashkif-mongo-poc?authSource=admin")//mongodb://lingar:12345678@localhost:27017 - without password: mongodb://localhost:27017
         .then(() => console.log("db connected by mongoose"))
@@ -25,7 +27,9 @@ module.exports.init = async () => {
 
 
 }
-
+module.exports.getStocks = async () =>{
+    return await stockModel.find();
+}
 
 const createInitMocks = async () => {
 
