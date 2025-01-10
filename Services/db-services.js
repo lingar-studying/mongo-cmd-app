@@ -1,6 +1,6 @@
 const mongooseTool = require("mongoose");
 const {StockScheme} = require("../data/Stock");
-
+//https://mongoosejs.com/
 const connectDB = () =>{
     mongooseTool.connect("mongodb://lingar:12345678@localhost:27017/izhar-mashkif-mongo-poc?authSource=admin")//mongodb://lingar:12345678@localhost:27017 - without password: mongodb://localhost:27017
         .then(()=> console.log("db connected by mongoose"))
@@ -9,13 +9,23 @@ const connectDB = () =>{
     
 }
 
-module.exports.init = () =>{
+module.exports.init = async () =>{
     connectDB();
 
     //creating scheme = shape of the collection to create
     const stocksSchema = new mongooseTool.Schema(StockScheme);
     //creating the collection
     const StockModel = mongooseTool.model('stocks', stocksSchema);
+
+    const coke = new StockModel({
+        name: "Coca-Cola Consolidated",
+        symbol: "ko".toUpperCase(),
+        industry: "food",
+        price: 61.59,
+        isActive: false,
+    });
+
+    await coke.save();
 
 
 
