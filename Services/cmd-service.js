@@ -12,7 +12,7 @@ module.exports.runMe = () => {
     init().then(() => {
         getStocks().then(
             res => {
-                console.log(res);
+               // console.log(res);
                 data = res;
                 showData();
             }
@@ -25,15 +25,20 @@ module.exports.runMe = () => {
     // });
 }
 const showData = async () => {
-    await menu();
 
 
     data = await getStocks();
     console.log("Current stocks in the account:");
     // data.forEach((e,i)=>console.log(`${i+1}- ${e.name}, ${e.symbol} ,${e.price}`));
-    const cleanData = data.map(e => e.toObject());
+    const cleanData = data.map(e => e.toObject())
+
+    //removing the id.
+    cleanData.forEach(e=>{
+        delete e._id;
+    })
 
     console.table(cleanData);
+    await menu();
 
     // data.forEach((e,i)=> {
     //
@@ -45,12 +50,11 @@ const showData = async () => {
     // });
 
 
-    console.log("to add here the menu... ");
 
 }
 
 const menu = async () => {
-    console.log("Choose some action:\":" +
+    console.log("Choose some action:\:" +
         "1- Add new stock | 2- Update exist stock | 3- Delete stock | 4- Change stocks price randomly")
 
     async function addStock() {
@@ -128,7 +132,39 @@ const menu = async () => {
 
     }
 
-    function updateStock() {
+    async function updateStock() {
+        console.log("we here xx")
+        const choice = await prompt("Choose some index of the stock you want to update between 0 to " + (data.length-1));
+        // + data.length-1);
+
+        if(isNaN(choice) || +choice <0 || choice >= data.length){
+            console.log("Please choose a valid number");
+            showData();
+            return;
+        }
+        //I'll try to update the document directly
+        //this is other option - https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+        let documentToUpdate = data [(choice-1)];//the data should contains the direct db object that mongoose knows
+
+
+        console.log("you want to update this document:");
+        console.table(documentToUpdate);
+        const propToUpdate = await prompt("Choose what prop to update - for example name, or symbol or price (don't touch the id!) ");
+        documentToUpdate[propToUpdate] = await prompt("Insert new value");
+
+
+        try {
+            documentToUpdate.save();
+            console.log("The data have successfully updated: ");
+            //console.table(documentToUpdate);
+
+        }catch (e){
+            console.error(e);
+        }finally {
+            showData();
+        }
+
+
 
     }
 
@@ -142,9 +178,9 @@ const menu = async () => {
                 addStock();
                 ///return;
                 break;
-            case 21:
+            case 2:
                 updateStock();
-                return;
+                break;
         }
     })
 

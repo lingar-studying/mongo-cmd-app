@@ -2,7 +2,7 @@ const mongooseTool = require("mongoose");
 const {StockScheme} = require("../data/Stock");
 //https://mongoosejs.com/
 //https://www.nasdaq.com/market-activity/stocks
-
+//https://github.com/lingar-studying/Nodejs2Mongo-studying/blob/master/back-end/controllers/ProductController.js
 let stocksSchema = null;//new mongooseTool.Schema(StockScheme);
 //creating the collection
 let StockModel = null;
