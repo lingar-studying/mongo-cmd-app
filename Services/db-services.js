@@ -28,7 +28,7 @@ module.exports.init = async () => {
 
 }
 module.exports.getStocks = async () =>{
-    return await stockModel.find();
+    return await stockModel.find();//.lean();//lean return a clean object. which will be printed well at console.table
 }
 
 const createInitMocks = async () => {
