@@ -53,8 +53,8 @@ const showData = async () => {
 }
 
 const menu = async () => {
-    console.log("Choose some action:\:" +
-        "1- Add new stock | 2- Update exist stock | 3- Delete stock | 4- Change stocks price randomly")
+    console.log("Choose some action:\n" +
+        "1- Add new stock | 2- Update exist stock | 3- Delete stock | 4- Change stocks price randomly\n")
 
     async function addStock() {
         let stock = {
@@ -125,7 +125,7 @@ const menu = async () => {
         }
         //I'll try to update the document directly
         //this is other option - https://mongoosejs.com/docs/tutorials/findoneandupdate.html
-        let documentToUpdate = data [(choice - 1)];//the data should contains the direct db object that mongoose knows
+        let documentToUpdate = data [(choice)];//the data should contains the direct db object that mongoose knows
 
 
         console.log("you want to update this document:");
@@ -135,8 +135,8 @@ const menu = async () => {
 
 
         try {
-            documentToUpdate.save();
-            console.log("The data have successfully updated: ");
+            await documentToUpdate.save();
+            console.log("The data have successfully updated... ", documentToUpdate);
             //console.table(documentToUpdate);
 
         } catch (e) {
@@ -145,6 +145,37 @@ const menu = async () => {
             showData();
         }
 
+
+    }
+
+    async function deleteStock() {
+        const choice = await prompt("Choose some index of the stock you want to DELETE between 0 to " + (data.length - 1));
+        // + data.length-1);
+
+        if (isNaN(choice) || +choice < 0 || choice >= data.length) {
+            console.log("Please choose a valid number");
+            showData();
+            return;
+        }
+        let documentToDelete = data [(choice )];//the data should contains the direct db object that mongoose knows
+
+
+        console.log("you want to DELETE this document:");
+        console.table(documentToDelete);
+
+        const approve = await prompt("Approve -y/n");
+
+        if(approve === 'y'){
+           try{
+                await documentToDelete.deleteOne();
+                console.log("deleted successfully")
+           }catch (e){
+               console.log(e);
+           }
+           finally {
+               showData();
+           }
+        }
 
     }
 
@@ -161,13 +192,15 @@ const menu = async () => {
             case 2:
                 updateStock();
                 break;
+            case 3:
+                deleteStock();
         }
     })
 
 }
 const prompt = (question) => {
     return new Promise(resolve => {
-        rl.question(question, answer => {
+        rl.question(question + "\n", answer => {
             resolve(answer);
         })
     })
