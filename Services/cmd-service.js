@@ -87,7 +87,7 @@ const menu = async () => {
         stock.symbol = await prompt("symbol?")
         stock.symbol = stock.symbol.toUpperCase();
         let val = await prompt("industry");
-        stock.symbol.industry = val;
+        stock.industry = val;
         val = await prompt("active (y or n)");
         stock.isActive = (val === "y");
         val = await prompt("price? (only numbers)");
