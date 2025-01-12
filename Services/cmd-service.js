@@ -12,7 +12,7 @@ module.exports.runMe = () => {
     init().then(() => {
         getStocks().then(
             res => {
-               // console.log(res);
+                // console.log(res);
                 data = res;
                 showData();
             }
@@ -33,7 +33,7 @@ const showData = async () => {
     const cleanData = data.map(e => e.toObject())
 
     //removing the id.
-    cleanData.forEach(e=>{
+    cleanData.forEach(e => {
         delete e._id;
     })
 
@@ -48,7 +48,6 @@ const showData = async () => {
     //     // all.index = i+1;
     //     console.table(all);
     // });
-
 
 
 }
@@ -111,40 +110,22 @@ const menu = async () => {
         //     stock.symbol = answer;
         //     //rl.close(); // Close the input stream after receiving the input
         // });
-        // rl.question('industry? ', (answer) => {
-        //     stock.industry = answer;
-        //     //rl.close(); // Close the input stream after receiving the input
-        // });
-        // rl.question('price? (only numbers ', (answer) => {
-        //     if(isNaN(answer)){
-        //         console.log("invalid answer, enter number, try again");
-        //         addStock();
-        //         return;
-        //     }
-        //     stock.price = answer;
-        //     //rl.close(); // Close the input stream after receiving the input
-        // });
-        // rl.question('isActive? - 0 or 1', (answer) => {
-        //
-        //     stock.isActive = answer ==1 ;
-        //     //rl.close(); // Close the input stream after receiving the input
-        // });
+
 
     }
 
     async function updateStock() {
-        console.log("we here xx")
-        const choice = await prompt("Choose some index of the stock you want to update between 0 to " + (data.length-1));
+        const choice = await prompt("Choose some index of the stock you want to update between 0 to " + (data.length - 1));
         // + data.length-1);
 
-        if(isNaN(choice) || +choice <0 || choice >= data.length){
+        if (isNaN(choice) || +choice < 0 || choice >= data.length) {
             console.log("Please choose a valid number");
             showData();
             return;
         }
         //I'll try to update the document directly
         //this is other option - https://mongoosejs.com/docs/tutorials/findoneandupdate.html
-        let documentToUpdate = data [(choice-1)];//the data should contains the direct db object that mongoose knows
+        let documentToUpdate = data [(choice - 1)];//the data should contains the direct db object that mongoose knows
 
 
         console.log("you want to update this document:");
@@ -158,12 +139,11 @@ const menu = async () => {
             console.log("The data have successfully updated: ");
             //console.table(documentToUpdate);
 
-        }catch (e){
+        } catch (e) {
             console.error(e);
-        }finally {
+        } finally {
             showData();
         }
-
 
 
     }
