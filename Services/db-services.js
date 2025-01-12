@@ -5,7 +5,7 @@ const {StockScheme} = require("../data/Stock");
 
 let stocksSchema = null;//new mongooseTool.Schema(StockScheme);
 //creating the collection
-let stockModel = null;
+let StockModel = null;
 
 let stocksUpdatedData = [];
 const connectDB = () => {
@@ -22,20 +22,25 @@ module.exports.init = async () => {
     //creating scheme = shape of the collection to create
     stocksSchema = new mongooseTool.Schema(StockScheme);
     //creating the collection
-    stockModel = mongooseTool.model('stocks', stocksSchema);
+    StockModel = mongooseTool.model('stocks', stocksSchema);
     await createInitMocks();
 
 
 }
 module.exports.getStocks = async () =>{
-    return await stockModel.find();//.lean();//lean return a clean object. which will be printed well at console.table
+    return await StockModel.find();//.lean();//lean return a clean object. which will be printed well at console.table
+}
+
+module.exports.createStockDb = (stock) =>{
+    const addStockToDb = new StockModel(stock);
+    return  addStockToDb.save();
 }
 
 const createInitMocks = async () => {
 
-    let exist = await stockModel.exists({symbol: "KO"}) != null;
+    let exist = await StockModel.exists({symbol: "KO"}) != null;
     if (!exist) {
-        const coke = new stockModel({
+        const coke = new StockModel({
             name: "Coca-Cola Consolidated",
             symbol: "ko".toUpperCase(),
             industry: "food",
@@ -48,11 +53,11 @@ const createInitMocks = async () => {
     }
 
 
-    exist = await stockModel.exists({symbol: "BAER"}) != null;
+    exist = await StockModel.exists({symbol: "BAER"}) != null;
 
     if (!exist) {
 
-        const baer = new stockModel({
+        const baer = new StockModel({
             name: "Bridger Aerospace Group Holdings",
             symbol: "baer".toUpperCase(),
             industry: "Business Services",
@@ -64,11 +69,11 @@ const createInitMocks = async () => {
 
     }
 
-    exist = await stockModel.exists({symbol: "PSMT"}) != null;
+    exist = await StockModel.exists({symbol: "PSMT"}) != null;
 
     if (!exist) {
 
-        const psmt = new stockModel({
+        const psmt = new StockModel({
             name: "PriceSmart",
             symbol: "psmt".toUpperCase(),
             industry: "Department/Specialty Retail Stores",
